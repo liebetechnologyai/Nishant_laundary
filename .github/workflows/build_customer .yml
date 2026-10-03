@@ -24,11 +24,28 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Generate Native Android Shell & Setup Main
+      - name: Generate Native Android Shell & Setup Flat Structure
         run: |
+          # 1. Root me jo pubspec.yaml aur pubspec.lock hain unka backup le lo
+          cp pubspec.yaml pubspec.yaml.bak 2>/dev/null || true
+          cp pubspec.lock pubspec.lock.bak 2>/dev/null || true
+
+          # 2. Native shell generate karo
           flutter create --org com.liebe --project-name liebe_customer --overwrite .
+
+          # 3. Apni original pubspec files ko restore karo
+          cp pubspec.yaml.bak pubspec.yaml 2>/dev/null || true
+          cp pubspec.lock.bak pubspec.lock 2>/dev/null || true
+
+          # 4. Root ki saari .dart files aur folders ko lib/ ke andar shift karo
           mkdir -p lib
-          cp main.dart lib/main.dart
+          find . -maxdepth 1 -name "*.dart" ! -name "widget_test.dart" -exec cp {} lib/ \;
+          [ -d "screens" ] && cp -r screens lib/ || true
+          [ -d "models" ] && cp -r models lib/ || true
+          [ -d "services" ] && cp -r services lib/ || true
+          [ -d "widgets" ] && cp -r widgets lib/ || true
+          [ -d "utils" ] && cp -r utils lib/ || true
+
 
       - name: Get dependencies
         run: |
