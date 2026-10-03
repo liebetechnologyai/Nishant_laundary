@@ -26,25 +26,28 @@ jobs:
 
       - name: Generate Native Android Shell & Setup Flat Structure
         run: |
-          # 1. Root me jo pubspec.yaml aur pubspec.lock hain unka backup le lo
+          # 1. Pubspec ka backup
           cp pubspec.yaml pubspec.yaml.bak 2>/dev/null || true
           cp pubspec.lock pubspec.lock.bak 2>/dev/null || true
 
           # 2. Native shell generate karo
           flutter create --org com.liebe --project-name liebe_customer --overwrite .
 
-          # 3. Apni original pubspec files ko restore karo
+          # 3. Pubspec restore
           cp pubspec.yaml.bak pubspec.yaml 2>/dev/null || true
           cp pubspec.lock.bak pubspec.lock 2>/dev/null || true
 
-          # 4. Root ki saari .dart files aur folders ko lib/ ke andar shift karo
-          mkdir -p lib
+          # 4. Target directories banao
+          mkdir -p lib/screens lib/models lib/services lib/widgets lib/utils
+
+          # 5. Root ki saari .dart files ko lib/ me copy karo
           find . -maxdepth 1 -name "*.dart" ! -name "widget_test.dart" -exec cp {} lib/ \;
-          [ -d "screens" ] && cp -r screens lib/ || true
-          [ -d "models" ] && cp -r models lib/ || true
-          [ -d "services" ] && cp -r services lib/ || true
-          [ -d "widgets" ] && cp -r widgets lib/ || true
-          [ -d "utils" ] && cp -r utils lib/ || true
+
+          # 6. Agar screens vagaira root me seedhe hain to unhe lib/screens me shift karo
+          [ -f "home_screen.dart" ] && cp home_screen.dart lib/screens/ || true
+          [ -f "login_screen.dart" ] && cp login_screen.dart lib/screens/ || true
+          [ -d "screens" ] && cp -r screens/* lib/screens/ 2>/dev/null || true
+          [ -d "models" ] && cp -r models/* lib/models/ 2>/dev/null || true
 
 
       - name: Get dependencies
