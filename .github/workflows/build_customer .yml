@@ -26,21 +26,18 @@ jobs:
 
       - name: Generate Native Android Shell
         run: |
-          cd customer
-          flutter create --org com.liebe --project-name liebe_customer .
+          flutter create --org com.liebe --project-name liebe_customer --overwrite .
 
       - name: Get dependencies
         run: |
-          cd customer
           flutter pub get --no-example
 
       - name: Build APK
         run: |
-          cd customer
           flutter build apk --release --no-tree-shake-icons --dart-define=SUPABASE_URL=https://vtgmbshjtfcqlpivylam.supabase.com --dart-define=SUPABASE_ANON_KEY=sb_publishable_O6--UWv7Mo7w_NzX1WqLuA_ASzdUJIW --dart-define=API_URL=http://10.0.2.2:4000
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: customer-app-release
-          path: customer/build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
