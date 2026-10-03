@@ -27,7 +27,8 @@ jobs:
       - name: Generate Native Android Shell
         run: |
           flutter create --org com.liebe --project-name liebe_customer --overwrite .
-
+          git checkout lib/main.dart
+          
       - name: Get dependencies
         run: |
           flutter pub get --no-example
