@@ -24,11 +24,14 @@ jobs:
         with:
           channel: 'stable'
 
+      - name: Backup main.dart
+        run: cp lib/main.dart lib/main.dart.bak
+
       - name: Generate Native Android Shell
         run: |
           flutter create --org com.liebe --project-name liebe_customer --overwrite .
-          git checkout lib/main.dart
-          
+          cp lib/main.dart.bak lib/main.dart
+
       - name: Get dependencies
         run: |
           flutter pub get --no-example
