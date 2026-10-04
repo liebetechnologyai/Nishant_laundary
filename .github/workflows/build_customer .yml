@@ -37,20 +37,23 @@ jobs:
           cp pubspec.yaml.bak pubspec.yaml 2>/dev/null || true
           cp pubspec.lock.bak pubspec.lock 2>/dev/null || true
 
-          # 4. Target directories
+          # 4. Enable Core Library Desugaring for flutter_local_notifications
+          sed -i '/compileOptions {/a \        coreLibraryDesugaringEnabled true' android/app/build.gradle
+          sed -i '/dependencies {/a \    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.4"' android/app/build.gradle
+
+          # 5. Target directories
           mkdir -p lib/screens lib/models lib/services lib/widgets lib/utils
 
-          # 5. Copy ALL root .dart files into lib/ directly
+          # 6. Copy ALL root .dart files into lib/ directly
           find . -maxdepth 1 -name "*.dart" ! -name "widget_test.dart" -exec cp {} lib/ \;
 
-          # 6. Copy ALL root .dart files AND screens folder into lib/screens/ as well
+          # 7. Copy ALL root .dart files AND screens folder into lib/screens/ as well
           find . -maxdepth 1 -name "*.dart" ! -name "widget_test.dart" -exec cp {} lib/screens/ \;
           [ -d "screens" ] && cp -r screens/* lib/screens/ 2>/dev/null || true
           [ -d "models" ] && cp -r models/* lib/models/ 2>/dev/null || true
           [ -d "services" ] && cp -r services/* lib/services/ 2>/dev/null || true
           [ -d "widgets" ] && cp -r widgets/* lib/widgets/ 2>/dev/null || true
           [ -d "utils" ] && cp -r utils/* lib/utils/ 2>/dev/null || true
-
 
       - name: Get dependencies
         run: |
