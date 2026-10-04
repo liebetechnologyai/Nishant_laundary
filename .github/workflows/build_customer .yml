@@ -37,13 +37,13 @@ jobs:
           cp pubspec.yaml.bak pubspec.yaml 2>/dev/null || true
           cp pubspec.lock.bak pubspec.lock 2>/dev/null || true
 
-          # 4. Enable Core Library Desugaring (Supports both build.gradle and build.gradle.kts)
+          # 4. Enable Core Library Desugaring for Kotlin (.kts) and Groovy (.gradle)
           if [ -f "android/app/build.gradle.kts" ]; then
             sed -i '/compileOptions {/a \        isCoreLibraryDesugaringEnabled = true' android/app/build.gradle.kts
-            sed -i '/dependencies {/a \    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")' android/app/build.gradle.kts
+            echo 'dependencies { coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4") }' >> android/app/build.gradle.kts
           elif [ -f "android/app/build.gradle" ]; then
             sed -i '/compileOptions {/a \        coreLibraryDesugaringEnabled true' android/app/build.gradle
-            sed -i '/dependencies {/a \    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.4"' android/app/build.gradle
+            echo 'dependencies { coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.4" }' >> android/app/build.gradle
           fi
 
           # 5. Target directories
@@ -59,7 +59,6 @@ jobs:
           [ -d "services" ] && cp -r services/* lib/services/ 2>/dev/null || true
           [ -d "widgets" ] && cp -r widgets/* lib/widgets/ 2>/dev/null || true
           [ -d "utils" ] && cp -r utils/* lib/utils/ 2>/dev/null || true
-
 
       - name: Get dependencies
         run: |
